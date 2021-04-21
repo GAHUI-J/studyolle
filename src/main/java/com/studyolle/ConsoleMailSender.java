@@ -14,7 +14,8 @@ import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
 
 //일단은 가짜객체를 빈으로 등록해서 씀
-@Profile("local")
+@Profile("local") //Spring.profiles.active가 local일때만
+
 @Component
 @Slf4j
 public class ConsoleMailSender implements JavaMailSender {

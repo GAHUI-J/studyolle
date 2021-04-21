@@ -1,5 +1,7 @@
 package com.studyolle.account;
 
+
+
 import javax.validation.Valid;
 
 import org.springframework.mail.MailMessage;
@@ -23,9 +25,8 @@ import lombok.RequiredArgsConstructor;
 public class AccountController {
 	
 	private final SignUpFormValidator signUpFormValidator;
-	private final AccountRepository accountRepository;
-	private final JavaMailSender javaMailSender;
-	
+	private final AccountService accountService;
+		
 	
 	@InitBinder("signUpForm")
 	public void initBinder(WebDataBinder webDataBinder) {
@@ -49,29 +50,11 @@ public class AccountController {
 			return "account/sign-up";
 		}
 		
-		Account account = Account.builder()
-				.email(signUpForm.getEmail())
-				.nickname(signUpForm.getEmail())
-				.password(signUpForm.getPassword()) // TODO encoding 해야함 -> password를 평문으로 저장하게 되면 서비스가 굉장히 위험해짐(db 털리면 끝장남))
-				.studyCreatedByWeb(true)
-				.studyEnrollmentResultByWeb(true)
-				.studyUpdatedByWeb(true)
-				.build();
-		
-		Account newAccount = accountRepository.save(account);
-		newAccount.generateEmailCheckToken();
-		SimpleMailMessage mailMessage = new SimpleMailMessage();
-		mailMessage.setTo(newAccount.getEmail());
-		mailMessage.setSubject("스터디올래, 회원가입 인증");
-		mailMessage.setText("/check-email-token?token="+ newAccount.getEmailCheckToken()+
-				"&email="+newAccount.getEmail());
-		
-		javaMailSender.send(mailMessage);
-		
-		
-		
-		
+		//인증이메일을 보냈다는 걸 컨트롤러에서 알 필요는 없다(서비스 뒤쪽으로 숨기자)
+		accountService.processNewAccount(signUpForm);
 		return "redirect:/";
 	}
+
+
 
 }

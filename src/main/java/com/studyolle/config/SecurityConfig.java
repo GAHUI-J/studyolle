@@ -10,6 +10,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @Configuration
 @EnableWebSecurity
+
+/*
+ * 이 url들은 인증하지 않고 사용해도 된다! 
+ * but 그렇다고해서 안전하지 않은 요청(ex.CSRF)까지 받아들이는 것은 아님
+ * CSRF: 내 사이트로 공격하는 타 사이트를 대상으로 폼 데이터를 보내는 것
+ 	->방어)CSRF 토큰(Security Token) 사용
+ * */
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	@Override
