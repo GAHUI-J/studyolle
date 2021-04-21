@@ -1,19 +1,23 @@
 package com.studyolle.domain;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import javax.persistence.*;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter @Setter @EqualsAndHashCode(of="id")
 //id만 사용하는 이유 ->연관관계가 복잡해질 때 @EqualsAndHashCode 에서 서로 다른 연관관계를 계속해서 
 //				  순환참조하느라 무한루프가 발생(stackoverflow로 이어짐)하는 것을 방지하기 위함
-
-public class Acount {
+@Builder @AllArgsConstructor @NoArgsConstructor
+public class Account {
 	
 	//varchar(255)
 	
@@ -58,7 +62,14 @@ public class Acount {
 	
 	//스터디 업데이트 내용 알림
 	private boolean studyUpdatedByEmail; 
-	private boolean studyUpdatedByWeb; 
+	private boolean studyUpdatedByWeb;
+	
+	
+	
+	public void generateEmailCheckToken() {
+
+		this.emailCheckToken = UUID.randomUUID().toString();
+	} 
 	
 	
 	

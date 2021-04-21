@@ -1,8 +1,10 @@
 package com.studyolle.config;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
@@ -23,6 +25,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		
 
 	} //손쉽게 security filter 가능
+
+	
+	
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+		//location에 있는 static한 resources들은 security filter들을 적용하지 않도록
+		web.ignoring()
+			.requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+	}
+	
+	
+	
+	
 
 	
 }

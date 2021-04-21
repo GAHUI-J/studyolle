@@ -24,9 +24,11 @@ class AccountControllerTest {
 	@Test
 	void signUpForm() throws Exception {
 		mockMvc.perform(get("/sign-up"))
-				.andDo(print())
+				.andDo(print()) //view Test
 				.andExpect(status().isOk())
-				.andExpect(view().name("account/sign-up"));
+				.andExpect(view().name("account/sign-up"))
+				//signUpForm Attribute 가 없으면 에러가 나므로 확인절차
+				.andExpect(model().attributeExists("signUpForm"));
 	}
 
 
