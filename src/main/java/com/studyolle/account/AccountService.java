@@ -1,5 +1,6 @@
 package com.studyolle.account;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -58,7 +59,7 @@ public class AccountService {
 		private Account saveNewAccount(SignUpForm signUpForm) {
 			Account account = Account.builder()
 					.email(signUpForm.getEmail())
-					.nickname(signUpForm.getEmail())
+					.nickname(signUpForm.getNickname())
 					//TODO 비밀번호 인코딩
 					.password(passwordEncoder.encode(signUpForm.getPassword())) // TODO encoding 해야함 -> password를 평문으로 저장하게 되면 서비스가 굉장히 위험해짐(db 털리면 끝장남))
 					.studyCreatedByWeb(true)
@@ -70,13 +71,14 @@ public class AccountService {
 			return newAccount;
 		}
 		//컨트롤러에서 빼옴
-		private void sendSignUpConfirmEmail(Account newAccount) {
+		public void sendSignUpConfirmEmail(Account newAccount) {
 			SimpleMailMessage mailMessage = new SimpleMailMessage();
 			mailMessage.setTo(newAccount.getEmail());
 			mailMessage.setSubject("스터디올래, 회원가입 인증");
 			mailMessage.setText("/check-email-token?token="+ newAccount.getEmailCheckToken()+
 					"&email="+newAccount.getEmail());
 			
+			newAccount.setEmailCheckTokenGeneratedAt(LocalDateTime.now());
 			
 			
 			javaMailSender.send(mailMessage);//이 부분이 없으면 test에서 깨짐 -> then(javaMailSender).should().send(any(SimpleMailMessage.class)) ;
@@ -86,7 +88,8 @@ public class AccountService {
 		public void login(Account account) {
 			//지금은 인코딩된 password만 알 수 있기에 이 방법으로	
 			UsernamePasswordAuthenticationToken token 
-				= new UsernamePasswordAuthenticationToken(account.getNickname(), 
+				= new UsernamePasswordAuthenticationToken(
+							new UserAccount(account), //principal 객체
 							account.getPassword(),
 							List.of(new SimpleGrantedAuthority("ROLE USER"))); //세번째 파라미터로 오는 값이 권한목록
  

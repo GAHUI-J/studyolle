@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.studyolle.domain.Account;
+import com.studyolle.main.CurrentUser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -86,6 +87,38 @@ public class AccountController {
 		return view;
 		
 		
+	}
+	
+	
+	@GetMapping("/check-email")
+	public String checkEmail(@CurrentUser Account account, Model model) {
+		model.addAttribute("email", account.getEmail());
+		return "account/check-email";
+	}
+	
+	@GetMapping("/resend-confirm-email")
+	public String resendConfirmEmail(@CurrentUser Account account, Model model) {
+		if(!account.canSendConfirmEmail()) {
+			model.addAttribute("error", "인증 이메일은 1시간에 한번만 전송할 수 있습니다.");
+			model.addAttribute("email", account.getEmail());
+			return "account/check-email";
+		}
+		
+		accountService.sendSignUpConfirmEmail(account); //AccountService에서 public으로 바꾸자
+		
+		
+		
+		/*
+		 * redirect를 쓰는 이유 >>> 
+		화면이 refresh 될 때마다 이메일이 재전송되면 안 되므로 
+		(/resend-confirm-email이 url에 계속 남아있으면 화면을 refresh 할 때마다 이메일을 계속 보내게 됨) 
+		의도치않게 그런 일이 일어날 수 있음을 미연에 방지 (form submit도 마찬가지) -> 조금 더 나은 UX를 제공
+
+		 */
+		
+		
+		
+		return "redirect:/";
 	}
 
 

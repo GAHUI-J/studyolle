@@ -122,7 +122,7 @@ class AccountControllerTest {
 				.with(csrf()))
 		.andExpect(status().is3xxRedirection())
 		.andExpect(view().name("redirect:/"))
-		.andExpect(authenticated().withUsername("gahui")); //.withUsername() 유저네임도 같이 확인 //왜 여기서 test error가 뜰까?????
+		.andExpect(authenticated().withUsername("gahui")); //.withUsername() 유저네임도 같이 확인 //왜 여기서 test error가 뜰까????? -> 해결)가입할때 닉네임에 이메일을 넣어버림
 		
 		Account account = accountRepository.findByEmail("gahui@test.com");
 		assertNotNull(account);
