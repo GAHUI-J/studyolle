@@ -87,6 +87,12 @@
      <groupId>org.springframework.boot</groupId>
      <artifactId>spring-boot-starter-validation</artifactId>
 </dependency>
+<!-- 타임리프 스프링 시큐리티 -->
+<dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity5</artifactId>
+        </dependency>
+
 
 	</dependencies>
 
@@ -113,6 +119,36 @@
                 </arguments>
             </configuration>
         </plugin>
+        
+        <plugin>
+    <groupId>com.github.eirslett</groupId>
+    <artifactId>frontend-maven-plugin</artifactId>
+    <version>1.8.0</version>
+    <configuration>
+        <nodeVersion>v4.6.0</nodeVersion>
+        <workingDirectory>src/main/resources/static</workingDirectory>
+    </configuration>
+    <executions>
+        <execution>
+            <id>install node and npm</id>
+            <goals>
+                <goal>install-node-and-npm</goal>
+            </goals>
+            <phase>generate-resources</phase>
+        </execution>
+        <execution>
+            <id>npm install</id>
+            <goals>
+                <goal>npm</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+                <arguments>install</arguments>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+        
 		</plugins>
 	</build>
 

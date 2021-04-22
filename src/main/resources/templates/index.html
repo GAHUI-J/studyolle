@@ -1,10 +1,28 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-Home
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+				xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments.html :: head"></head>
+
+<body class="bg-light">
+
+<div th:replace="fragments.html :: main-nav"></div>	
+	
+	    <div class="container">
+        <div class="py-5 text-center">
+            <h2>스터디올래</h2>
+        </div>
+        
+        <div th:replace="fragments.html :: footer"></div>
+
+
+
+    </div>
+
+
+<script src="/node-modules/jquery/dist/jquery.min.js"></script>
+<script src="/node-modules/bootstrap/dist/bootstrap.bundle.min.js"></script>
+
+
+
 </body>
 </html>

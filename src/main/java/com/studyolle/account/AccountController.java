@@ -2,6 +2,8 @@ package com.studyolle.account;
 
 
 
+import java.time.LocalDateTime;
+
 import javax.validation.Valid;
 
 import org.springframework.mail.MailMessage;
@@ -26,6 +28,7 @@ public class AccountController {
 	
 	private final SignUpFormValidator signUpFormValidator;
 	private final AccountService accountService;
+	private final AccountRepository accountRepository;
 		
 	
 	@InitBinder("signUpForm")
@@ -51,8 +54,38 @@ public class AccountController {
 		}
 		
 		//인증이메일을 보냈다는 걸 컨트롤러에서 알 필요는 없다(서비스 뒤쪽으로 숨기자)
-		accountService.processNewAccount(signUpForm);
+		Account account = accountService.processNewAccount(signUpForm);
+		accountService.login(account);
 		return "redirect:/";
+	}
+	
+	
+	@GetMapping("/check-email-token")
+	public String checkEmailToken(String token, String email, Model model) {
+		Account account = accountRepository.findByEmail(email);
+		String view = "account/checked-email";
+		if(account == null) {
+			model.addAttribute("error", "wrong.email");
+			return view;
+		}
+		
+//수정	if(!account.getEmailCheckToken().equals(token)) {
+		if(!account.isValidToken(token)) {
+			model.addAttribute("error", "wrong.token");
+			return view;
+		}
+		
+		
+		account.completeSignUp();
+		//account에서 했어야 할 일이므로 따로 빼서 account로 ㄱㄱ
+//		account.setEmailVerified(true);
+//		account.setJoinedAt(LocalDateTime.now());
+		accountService.login(account);
+		model.addAttribute("numberOfUser", accountRepository.count()); //count 기본 제공되는 메서드
+		model.addAttribute("nickname", account.getNickname());
+		return view;
+		
+		
 	}
 
 

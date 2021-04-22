@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @Configuration
 @EnableWebSecurity
-
 /*
  * 이 url들은 인증하지 않고 사용해도 된다! 
  * but 그렇다고해서 안전하지 않은 요청(ex.CSRF)까지 받아들이는 것은 아님
@@ -37,8 +36,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		//location에 있는 static한 resources들은 security filter들을 적용하지 않도록
 		web.ignoring()
+			.mvcMatchers("/node_modules/**")
+			//location에 있는 static한 resources들은 security filter들을 적용하지 않도록
 			.requestMatchers(PathRequest.toStaticResources().atCommonLocations());
 	}
 	

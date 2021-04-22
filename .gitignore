@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+###버전 관리 하지 않도록###
+### NPM###
+src/main/resources/static/node_modules
+src/main/resources/static/node
