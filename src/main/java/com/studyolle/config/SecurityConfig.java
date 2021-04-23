@@ -29,6 +29,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				//나머지는 로그인해야 가능
 				.anyRequest().authenticated();
 		
+		//로그인 기능 사용
+		http.formLogin()
+				.loginPage("/login").permitAll();
+		
+		http.logout()
+				.logoutSuccessUrl("/");
+		
 
 	} //손쉽게 security filter 가능
 

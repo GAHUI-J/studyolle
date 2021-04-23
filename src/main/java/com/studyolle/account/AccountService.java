@@ -13,6 +13,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +26,12 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class AccountService {
+/*
+ * 로그인 핸들러 만들 필요 없음! -> 스프링시큐리티가 알아서 만들어준다
+ * 유저를 조회할 수 있는 UserDetailsService 만들자
+ * (로그인 요청을 처리하는 핸들러는 안 만들어도 되지만 이 인터페이스는 구현해야 함)
+ * */
+public class AccountService implements UserDetailsService {
 
 		//컨트롤러에서 빼옴
 		private final AccountRepository accountRepository;
@@ -106,6 +114,20 @@ public class AccountService {
 			context.setAuthentication(token2);
 			 */
 			
+		}
+
+		@Override
+		public UserDetails loadUserByUsername(String emailOrNickname) throws UsernameNotFoundException {
+			Account account = accountRepository.findByEmail(emailOrNickname);
+			if(account==null) {
+				account = accountRepository.findByNickname(emailOrNickname);
+			}
+			
+			if(account==null) {
+				throw new UsernameNotFoundException(emailOrNickname);
+			}
+			
+			return new UserAccount(account);
 		}
 
 }
