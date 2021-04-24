@@ -43,7 +43,7 @@ public class SettingsController {
 			return SETTINGS_PROFILE_VIEW_NAME;
 		}
 		accountService.updateProfile(account, profile);
-		attributes.addFlashAttribute("message", "프로필을 수정했습니다.");
+		attributes.addFlashAttribute("message", "프로필을 수정했습니다."); // 한 번 쓰고 없어지는 데이터("Flash") , @GetMapping(SETTINGS_PROFILE_URL) 로 전송돼  폼이 보여졌을 때 메세지 출력
 		
 		return "redirect:" + SETTINGS_PROFILE_URL;
 	}
