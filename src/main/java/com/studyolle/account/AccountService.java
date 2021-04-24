@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.studyolle.domain.Account;
+import com.studyolle.settings.Profile;
 
 import lombok.RequiredArgsConstructor;
 
@@ -140,6 +141,23 @@ public class AccountService implements UserDetailsService {
 		public void completeSignUp(Account account) {
 			account.completeSignUp();
 			login(account);
+			
+		}
+
+		public void updateProfile(Account account, Profile profile) { //여기서의 account 객체는 persist 상태가 아니고 detached 객체
+			/*
+			detached 객체 -> JPA가 알고 있던 객체(=id값이 있고 JPA를 통해 한번이라도 db에 저장이 된 객체),
+			아무리 변경을 하더라도 변경이력을 감지하지 않는다(트랜잭션이 끝나도 db에 반영 안 함)
+			
+			참고]transient 객체 -> 새로 만든 객체
+			*/
+			
+			account.setUrl(profile.getUrl());
+			account.setOccupation(profile.getOccupation());
+			account.setLocation(profile.getLocation());
+			account.setBio(profile.getBio());
+			
+			accountRepository.save(account);
 			
 		}
 

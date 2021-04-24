@@ -64,7 +64,7 @@ public class AccountController {
 	
 	@GetMapping("/check-email-token")
 	public String checkEmailToken(String token, String email, Model model) {
-		Account account = accountRepository.findByEmail(email);
+		Account account = accountRepository.findByEmail(email); //여기서의 account 객체는 영속성 컨텍스트에서 관리하는 객체(=persist 상태) 
 		String view = "account/checked-email";
 		if(account == null) {
 			model.addAttribute("error", "wrong.email");
