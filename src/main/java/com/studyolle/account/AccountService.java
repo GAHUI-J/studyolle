@@ -25,6 +25,7 @@ import com.studyolle.domain.Account;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 /*
  * 로그인 핸들러 만들 필요 없음! -> 스프링시큐리티가 알아서 만들어준다
@@ -41,7 +42,7 @@ public class AccountService implements UserDetailsService {
 //		스프링 시큐리티에 빈으로 정의가 돼있지만 지금은 그 빈이 노출돼있지 않기 때문에 지금은 주입받을 수 없음 ( 주입받으려면 spring security 약간 손봐야함)
 //		private final AuthenticationManager authenticationManager;
 
-		@Transactional
+		
 		public Account processNewAccount(@Valid SignUpForm signUpForm) {
 			//Transaction 범위 안에 있으므로 
 			//newAccount 객체는 detached상태가 아닌 persist상태가 유지됨
@@ -116,6 +117,8 @@ public class AccountService implements UserDetailsService {
 			
 		}
 
+		// 데이터를 변경하는 작업이 아니므로 읽기전용 트랜잭션
+		@Transactional(readOnly = true) 
 		@Override
 		public UserDetails loadUserByUsername(String emailOrNickname) throws UsernameNotFoundException {
 			Account account = accountRepository.findByEmail(emailOrNickname);
@@ -128,6 +131,16 @@ public class AccountService implements UserDetailsService {
 			}
 			
 			return new UserAccount(account);
+		}
+		
+		
+		
+		
+
+		public void completeSignUp(Account account) {
+			account.completeSignUp();
+			login(account);
+			
 		}
 
 }

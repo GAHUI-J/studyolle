@@ -16,6 +16,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.studyolle.domain.Account;
@@ -77,11 +78,15 @@ public class AccountController {
 		}
 		
 		
-		account.completeSignUp();
+		
+		//데이터를 변경해야 하는 일이 있다면 트랜잭션으로 관리 ---> 서비스에 위임해서 관리하자!
+
+		accountService.completeSignUp(account);
+//		account.completeSignUp();
 		//account에서 했어야 할 일이므로 따로 빼서 account로 ㄱㄱ
 //		account.setEmailVerified(true);
 //		account.setJoinedAt(LocalDateTime.now());
-		accountService.login(account);
+//		accountService.login(account);
 		model.addAttribute("numberOfUser", accountRepository.count()); //count 기본 제공되는 메서드
 		model.addAttribute("nickname", account.getNickname());
 		return view;
@@ -119,6 +124,23 @@ public class AccountController {
 		
 		
 		return "redirect:/";
+	}
+	
+	
+	
+	@GetMapping("/profile/{nickname}")
+	public String viewProfile(@PathVariable String nickname, Model model, @CurrentUser Account account) {
+		
+		Account byNickname = accountRepository.findByNickname(nickname);
+		
+		if(byNickname == null) {
+			throw new IllegalArgumentException(nickname + "에 해당하는 사용자가 없습니다.");
+		}
+		
+		model.addAttribute(byNickname); // model.addAttribute("account", byNickname); 과 같음
+		model.addAttribute("isOwner", byNickname.equals(account));
+		return "account/profile";
+		
 	}
 
 
