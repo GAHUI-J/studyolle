@@ -162,4 +162,10 @@ public class AccountService implements UserDetailsService {
 			
 		}
 
+		public void updatePassword(Account account, String newPassword) {
+			account.setPassword(passwordEncoder.encode(newPassword)); // 여기서의 account는 현재 detached 상태
+			accountRepository.save(account); //merge
+			
+		}
+
 }
